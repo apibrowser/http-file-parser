@@ -1,0 +1,2 @@
+= .http-File Parser
+Parser for Jetbrain .http files generated with ANTLR4
