@@ -3,17 +3,20 @@ package de.conet.fls.apibro.httpfileparser.util;
 import de.conet.fls.apibro.httpfileparser.HttpFileParser;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class DebugHelper {
     public static void printTokens(Lexer lexer) {
         //TODO: this does not print the proper rule name
+        List<? extends Token> allTokens = lexer.getAllTokens();
         System.out.println(
-                lexer.getAllTokens().stream()
-                        .map(o -> "(" + lexer.getRuleNames()[o.getType()] + ": \"" + o.getText() + "\")")
-                        .collect(Collectors.toList())
+                allTokens.stream()
+                        .map(token -> "(%s: \"%s\")".formatted(lexer.getRuleNames()[token.getType()], token.getText().replaceAll("\n", "\\\\n")))
+                        .collect(Collectors.joining("\n"))
         );
     }
 

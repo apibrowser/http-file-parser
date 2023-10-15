@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class HttpFileParserTest {
+public class HttpFileParserSmokeTest {
     @Test
     public void smokeTest() throws IOException {
         HttpFileParser parsed = HttpFileParserFactory.parse(getClass().getResourceAsStream("/example.http"));
