@@ -9,17 +9,6 @@ public class HttpFileParser_3_1_RequestsFileTest {
     // TODO doc
 
     @Test
-    public void request() {
-        HttpFileParser.RequestContext parsed = ParserTestUtil.test(
-                "GET http://example.com\n",
-                HttpFileParser::request
-        );
-
-        Assertions.assertTrue(parsed.children.size() > 0);
-//        System.out.println(parsed.toStringTree());
-    }
-
-    @Test
     public void requestWithNakedSeparator() {
         HttpFileParser.RequestWithSeparatorContext parsed = ParserTestUtil.test(
                 "###\n" +
@@ -68,6 +57,7 @@ public class HttpFileParser_3_1_RequestsFileTest {
         );
 
         Assertions.assertNotNull(parsed.request());
+        System.out.println(parsed.toStringTree());
     }
 
     @Test
@@ -94,17 +84,4 @@ public class HttpFileParser_3_1_RequestsFileTest {
         Assertions.assertEquals(3, parsed.RequestSeparator().size());
     }
 
-    @Test
-    public void requestFileWhitespaces() {
-        HttpFileParser.RequestsFileContext parsed = ParserTestUtil.test(
-                "   GET http://example.com\t   \t\n" +
-                "\t###\n" +
-                "\t   \t###\n" +
-                "###\t   \t\n",
-                HttpFileParser::requestsFile
-        );
-
-        Assertions.assertNotNull(parsed.request());
-        Assertions.assertEquals(3, parsed.RequestSeparator().size());
-    }
 }

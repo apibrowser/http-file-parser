@@ -16,8 +16,19 @@ import java.util.function.Function;
 public class ParserTestUtil {
 
     public static HttpFileParser parse(String input) {
-        CharStream charStream = CharStreams.fromString(input);
-        return HttpFileParserFactory.parse(charStream);
+        return parse(input, false);
+    }
+
+    public static HttpFileParser parse(String input, boolean printTokens) {
+        if (printTokens) {
+            // Note: cannot reuse charStream for both: printing and parsing,
+            // since the stream will be consumed after the first of both actions.
+            CharStream charStream = CharStreams.fromString(input);
+            HttpFileParserFactory.printTokens(charStream);
+        }
+
+        CharStream freshCharStream = CharStreams.fromString(input);
+        return HttpFileParserFactory.parse(freshCharStream);
     }
 
     public static HttpFileParser parse(InputStream input) {
@@ -31,7 +42,7 @@ public class ParserTestUtil {
     }
 
     public static <T extends ParserRuleContext> T test(String input, Function<HttpFileParser, T> ruleInvoker) {
-        HttpFileParser parser = parse(input);
+        HttpFileParser parser = parse(input, true);
         T result = ruleInvoker.apply(parser);
 
         Assertions.assertEquals(0, parser.getNumberOfSyntaxErrors(),
@@ -67,7 +78,7 @@ public class ParserTestUtil {
 
         Assertions.assertNotEquals(0, parser.getNumberOfSyntaxErrors(),
                 String.format("EXPECTED PARSE ERROR: The input '%s' should throw a syntax error," +
-                        " but was considered valid by the parser.", input));
+                              " but was considered valid by the parser.", input));
 
         return result;
     }
@@ -82,7 +93,7 @@ public class ParserTestUtil {
 
         Assertions.assertNotEquals(0, parser.getNumberOfSyntaxErrors(),
                 String.format("EXPECTED PARSE ERROR: The input '%s' should throw a syntax error," +
-                        " but was considered valid by the parser.", input));
+                              " but was considered valid by the parser.", input));
 
         return result;
     }
