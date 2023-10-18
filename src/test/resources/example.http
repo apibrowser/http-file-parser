@@ -3,3 +3,8 @@ GET http://example.com
 ###
 GET http://example.com
 ###
+GET http://example.com/api/
+    status
+    /foo
+    bar
+###

@@ -56,7 +56,7 @@ public class HttpFileParser_3_2_1_RequestLineTest {
 
         HttpFileParser.AuthorityContext authority = parsed.absoluteForm().hierPart().authority();
         Assertions.assertEquals("127.0.0.1", authority.host().ipv4OrRegName().getText());
-        Assertions.assertEquals(":8080", authority.port().PortDefinition().getText());
+        Assertions.assertEquals(":8080", authority.port().getText());
     }
 
     /**
@@ -74,7 +74,7 @@ public class HttpFileParser_3_2_1_RequestLineTest {
     }
 
     @Test
-    public void host() {
+    public void hostAsVariable() {
         HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
                 "http://{{host}}",
                 HttpFileParser::requestTarget
@@ -84,5 +84,55 @@ public class HttpFileParser_3_2_1_RequestLineTest {
         Assertions.assertEquals("{{host}}", authority.host().ipv4OrRegName().getText());
     }
 
+    /**
+     * 3.2.1.3. Resource path
+     */
+    @Test
+    public void resourcePath() {
+        HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
+                "http://example.com/api/status",
+                HttpFileParser::requestTarget
+        );
+
+        HttpFileParser.AbsolutePathContext absolutePath = parsed.absoluteForm().hierPart().absolutePath();
+        Assertions.assertEquals("/api/status", absolutePath.getText());
+    }
+
+    /**
+     * 3.2.1.3. Resource path
+     * Spec: "HTTP Request in Editor supports unicode characters as part of a resources path.
+     * A resources path can be split into several lines for better request readability.
+     * Line separators won’t be sent as part of the request during execution."
+     */
+    @Test
+    public void resourcePathWithMultiLines() {
+        HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
+                "http://example.com/api/\n" +
+                "\tstatus\n" +
+                "   /foo\n" +
+                " bar",
+                HttpFileParser::requestTarget
+        );
+
+        HttpFileParser.AbsolutePathContext absolutePath = parsed.absoluteForm().hierPart().absolutePath();
+        Assertions.assertEquals("/api/status/foobar", absolutePath.getText());
+    }
+
+    /**
+     * see {@link #resourcePathWithMultiLines()}
+     */
+    @Test
+    public void resourcePathShouldNotMatchNewLineWithoutIndent() {
+        HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
+                "http://example.com/api/\n" +
+                "   indented\n" +
+                "not-indented",
+                HttpFileParser::requestTarget
+        );
+
+        HttpFileParser.AbsolutePathContext absolutePath = parsed.absoluteForm().hierPart().absolutePath();
+        // should *not* contain "not-indented":
+        Assertions.assertFalse(absolutePath.getText().contains("not-indented"));
+    }
 
 }
