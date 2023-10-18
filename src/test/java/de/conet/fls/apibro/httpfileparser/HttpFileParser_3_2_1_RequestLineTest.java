@@ -135,4 +135,101 @@ public class HttpFileParser_3_2_1_RequestLineTest {
         Assertions.assertFalse(absolutePath.getText().contains("not-indented"));
     }
 
+
+    /**
+     * 3.2.1.4. Query and Fragment -> query
+     */
+    @Test
+    public void query() {
+        HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
+                "http://example.com/api/status?myQuery=foo&yourQuery=bar",
+                HttpFileParser::requestTarget
+        );
+
+        HttpFileParser.QueryContext query = parsed.absoluteForm().query();
+        Assertions.assertEquals("myQuery=foo&yourQuery=bar", query.getText());
+    }
+
+    /**
+     * 3.2.1.4. Query and Fragment -> query
+     */
+    @Test
+    public void queryWithMultilines() {
+        HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
+                "http://example.com/api/status?myQuery=foo\n" +
+                "\t&your\n" +
+                "   Quer\n" +
+                " y=bar",
+                HttpFileParser::requestTarget
+        );
+
+        HttpFileParser.QueryContext query = parsed.absoluteForm().query();
+        Assertions.assertEquals("myQuery=foo&yourQuery=bar", query.getText());
+    }
+
+    /**
+     * 3.2.1.4. Query and Fragment -> query
+     */
+    @Test
+    public void queryShouldNotMatchNewLineWithoutIndent() {
+        HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
+                "http://example.com/api/status?myQuery=foo\n" +
+                " &indented\n" +
+                "&not-indented",
+                HttpFileParser::requestTarget
+        );
+
+        HttpFileParser.QueryContext query = parsed.absoluteForm().query();
+        // should *not* contain "not-indented":
+        Assertions.assertFalse(query.getText().contains("not-indented"));
+    }
+
+    /**
+     * 3.2.1.4. Query and Fragment -> fragment
+     */
+    @Test
+    public void uriFragment() {
+        HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
+                "http://example.com/api/status#theFragment&theFragment#theFragment's-on-fire",
+                HttpFileParser::requestTarget
+        );
+
+        HttpFileParser.UriFragmentContext uriFragment = parsed.absoluteForm().uriFragment();
+        Assertions.assertEquals("theFragment&theFragment#theFragment's-on-fire", uriFragment.getText());
+    }
+
+    /**
+     * 3.2.1.4. Query and Fragment -> fragment
+     */
+    @Test
+    public void uriFragmentWithMultilines() {
+        HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
+                "http://example.com/api/status#theFragment\n" +
+                "\t&theFragment#the\n" +
+                "   Fragment's-on\n" +
+                " -fire",
+                HttpFileParser::requestTarget
+        );
+
+        HttpFileParser.UriFragmentContext uriFragment = parsed.absoluteForm().uriFragment();
+        Assertions.assertEquals("theFragment&theFragment#theFragment's-on-fire", uriFragment.getText());
+    }
+
+    /**
+     * 3.2.1.4. Query and Fragment -> fragment
+     */
+    @Test
+    public void uriFragmentShouldNotMatchNewLineWithoutIndent() {
+        HttpFileParser.RequestTargetContext parsed = ParserTestUtil.test(
+                "http://example.com/api/status#theFragment\n" +
+                " indented\n" +
+                "not-indented\n",
+                HttpFileParser::requestTarget
+        );
+
+        HttpFileParser.UriFragmentContext uriFragment = parsed.absoluteForm().uriFragment();
+        // should *not* contain "not-indented":
+        Assertions.assertFalse(uriFragment.getText().contains("not-indented"));
+    }
+
 }

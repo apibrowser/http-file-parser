@@ -85,8 +85,17 @@ absolutePath: Slash | (pathSeparator segment)+;
 pathSeparator: Slash | NewLineWithIndent;
 segment: InputCharacter* ;
 
-query: Mock; // TODO
-uriFragment: Mock; // Diff to Spec: cannot name the rule "fragment" since this is a reserved word in ANTLR4 TODO
+//
+// -> 3.2.1.4. Query and Fragment
+
+//Spec: "qery: (any input-character except ‘#’)* [new-line-with-indent query]"
+// note: input-character excludes NewLIne
+query: ~(Hash | NewLine)* (NewLineWithIndent query)?;
+
+//Spec: "fragment: (any input-character except ‘?’)* [new-line-with-indent fragment]"
+// Diff to Spec: cannot name the rule "fragment" since this is a reserved word in ANTLR4
+// note: input-character excludes NewLIne
+uriFragment: ~(QuestionMark | NewLine)* (NewLineWithIndent uriFragment)?;
 
 headers: Mock; // TODO
 messageBody: Mock; // TODO
