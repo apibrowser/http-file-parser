@@ -1,15 +1,13 @@
-package de.conet.fls.apibro.httpfileparser.util;
+package org.apibrowser.httpfileparser.util;
 
-import de.conet.fls.apibro.httpfileparser.HttpFileLexer;
-import de.conet.fls.apibro.httpfileparser.HttpFileParser;
+import org.apibrowser.httpfileparser.HttpFileLexer;
+import org.apibrowser.httpfileparser.HttpFileParser;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DebugHelper {
     public static void printTokens(Lexer lexer) {

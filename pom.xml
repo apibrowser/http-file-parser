@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.conet.fls.apibro</groupId>
+    <groupId>org.apibrowser</groupId>
     <artifactId>httpfileparser</artifactId>
     <version>0.1-SNAPSHOT</version>
 
@@ -23,7 +23,8 @@
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>4.13.1</version>
                 <configuration>
-                    <sourceDirectory>src/main/antlr</sourceDirectory>
+                    <sourceDirectory>src/main/resources/antlr</sourceDirectory>
+                    <outputDirectory>target/generated-sources/antlr4/</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>

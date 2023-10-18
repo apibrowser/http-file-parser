@@ -1,4 +1,4 @@
-package de.conet.fls.apibro.httpfileparser;
+package org.apibrowser.httpfileparser;
 
 import org.junit.jupiter.api.Test;
 

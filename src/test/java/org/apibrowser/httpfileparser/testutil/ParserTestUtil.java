@@ -1,7 +1,7 @@
-package de.conet.fls.apibro.httpfileparser.testutil;
+package org.apibrowser.httpfileparser.testutil;
 
-import de.conet.fls.apibro.httpfileparser.HttpFileParser;
-import de.conet.fls.apibro.httpfileparser.HttpFileParserFactory;
+import org.apibrowser.httpfileparser.HttpFileParserFactory;
+import org.apibrowser.httpfileparser.HttpFileParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.ParserRuleContext;

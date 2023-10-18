@@ -1,6 +1,6 @@
-package de.conet.fls.apibro.httpfileparser;
+package org.apibrowser.httpfileparser;
 
-import de.conet.fls.apibro.httpfileparser.util.DebugHelper;
+import org.apibrowser.httpfileparser.util.DebugHelper;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;

@@ -1,6 +1,6 @@
-package de.conet.fls.apibro.httpfileparser;
+package org.apibrowser.httpfileparser;
 
-import de.conet.fls.apibro.httpfileparser.testutil.ParserTestUtil;
+import org.apibrowser.httpfileparser.testutil.ParserTestUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
