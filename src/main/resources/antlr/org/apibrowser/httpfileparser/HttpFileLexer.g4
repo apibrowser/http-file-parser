@@ -6,7 +6,9 @@
 //
 lexer grammar HttpFileLexer;
 
-RequestSeparator: '###' LineTale;
+RequestSeparator: '###' (InputCharacter)* NewLine; // diff to spec: inlined "line-tail" token
+//LineTail: (InputCharacter)* NewLine; This is way too greedy to put it in a lexer
+//fragment LineTail: (InputCharacter)* NewLine;
 
 // Diff to spec: this must be individual Tokens
 GET: 'GET';
@@ -24,7 +26,7 @@ HttpVersionNewLine: 'HTTP/' Digit+ '.' Digit+;
 
 fragment WhiteSpace: (' ' | '\t');
 WhiteSpaces: (' ' | '\t')+;
-NewLine: '\n' | '\r' | '\r\n';
+NewLine: ('\n' | '\r' | '\r\n');
 NewLineWithIndent: NewLine WhiteSpaces -> channel(HIDDEN);
 
 HttpScheme: 'http' | 'https';
@@ -41,8 +43,6 @@ Colon: ':'; // Not in Spec
 Slash: '/';
 BracketLeft: '[';
 BracketRight: ']';
-
-fragment LineTale: (InputCharacter)* NewLine;
 
 InputCharacter: ~[\r\n\u2028\u2029];
 

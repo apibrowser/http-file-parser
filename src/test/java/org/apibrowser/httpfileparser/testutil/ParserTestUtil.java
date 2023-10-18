@@ -5,6 +5,7 @@ import org.apibrowser.httpfileparser.HttpFileParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.apibrowser.httpfileparser.util.DebugHelper;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.IOException;
@@ -44,6 +45,8 @@ public class ParserTestUtil {
     public static <T extends ParserRuleContext> T test(String input, Function<HttpFileParser, T> ruleInvoker) {
         HttpFileParser parser = parse(input, true);
         T result = ruleInvoker.apply(parser);
+
+        DebugHelper.printTree(result);
 
         Assertions.assertEquals(0, parser.getNumberOfSyntaxErrors(),
                 String.format("UNEXPECTED PARSE ERROR: The input '%s' should be parsed without syntax errors.", input));

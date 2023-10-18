@@ -25,14 +25,41 @@ options {
 // So, we add the "request" before that:
 // "requestsFile: request requestWithSeparator*"
 // But now, Leading and Trailing Separator Lines are not allowed. So add (request-separator)* on both sides:
-requestsFile: (RequestSeparator)* request requestWithSeparator* (RequestSeparator)*;
+requestsFile: (RequestSeparator | NewLine)* request requestWithSeparator* (RequestSeparator | NewLine)*;
 
 requestWithSeparator: (RequestSeparator)+ request;
 
 //
 // 3.2 Request
 //
-request: (requestLine NewLine) (headers NewLine)? messageBody? responseHandler? responseRef?; // TODO remove ()? of (headers NewLine)?
+request:
+    requestLine NewLine
+    headers?
+    (NewLine bodyAndOrResponseHandlers)?;
+
+bodyAndOrResponseHandlers: // "at least one" of the sequence: messageBody responseHandler responseRef
+    messageBody responseHandler? responseRef?
+    | responseHandler responseRef?
+    | responseRef
+    ;
+// original spec:
+//request:
+//    requestLine NewLine
+//    headers NewLine // *)
+//    messageBody?
+//    responseHandler?
+//    responseRef?;
+// non-empty headers also enforce a linebreak on the end of each headerField, effectively making this NewLine
+// a mandatory empty line under the headers:
+//      | myheader: leValue\n // linebreak from "headerField" rule
+//      | \n // linebreak from "request" rule
+// if you skip headers (possible, since "headers" rule allows that):
+//      | POST https://example.com \n // linebreak from "request" rule after requestLine
+//      | \n                          // empty headers + linebreak from "request" rule after headers
+//
+// this is actually how .http files behave in IntelliJ - except that a requestSeperator is allowed
+//      | POST https://example.com \n
+//      | ###                          // not allowed in spec, but works in intelli
 
 //
 // 3.2.1 Request line
@@ -89,7 +116,7 @@ segment: InputCharacter* ;
 // -> 3.2.1.4. Query and Fragment
 
 //Spec: "qery: (any input-character except ‘#’)* [new-line-with-indent query]"
-// note: input-character excludes NewLIne
+// note: input-character excludes NewLine
 query: ~(Hash | NewLine)* (NewLineWithIndent query)?;
 
 //Spec: "fragment: (any input-character except ‘?’)* [new-line-with-indent fragment]"
@@ -97,7 +124,25 @@ query: ~(Hash | NewLine)* (NewLineWithIndent query)?;
 // note: input-character excludes NewLIne
 uriFragment: ~(QuestionMark | NewLine)* (NewLineWithIndent uriFragment)?;
 
-headers: Mock; // TODO
+//
+// 3.2.2 Headers
+//
+headers: (headerField NewLine)+;
+headerField: fieldName Colon WhiteSpaces? fieldValue WhiteSpaces?;
+fieldName: ~(Colon | NewLine)+; //(any input-character except ‘:’)+ - note: input-character excludes NewLine
+
+// field-value spec: "line-tail [new-line-with-indent field-value]"
+// this seems odd, since line-tail contains an enforced linebreak; the mandatory linebreak after a header is already
+// defined in "headers" rule.
+// Moreover, the NewLineWithIndent addition does not seem to work in .http files executed with idea;
+// on this Request, it says 'unknown header "cation/json" and tries to add a header with this name
+//      | GET http://example.com/api/   // RequestLIne
+//      | Content-Type: appli           // Header -> headervalue = " appli" + NewLineWithIndent
+//      |     cation/json               // second part of
+//
+//fieldValue: ~(NewLine)* NewLine (NewLineWithIndent fieldValue)?; -> nope
+fieldValue: ~(NewLine)*;
+
 messageBody: Mock; // TODO
 responseHandler: Mock; // TODO
 responseRef: Mock; // TODO

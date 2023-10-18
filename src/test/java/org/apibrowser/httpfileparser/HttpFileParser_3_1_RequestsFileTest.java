@@ -1,6 +1,8 @@
 package org.apibrowser.httpfileparser;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.apibrowser.httpfileparser.testutil.ParserTestUtil;
+import org.apibrowser.httpfileparser.util.DebugHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -57,7 +59,6 @@ public class HttpFileParser_3_1_RequestsFileTest {
         );
 
         Assertions.assertNotNull(parsed.request());
-        System.out.println(parsed.toStringTree());
     }
 
     @Test

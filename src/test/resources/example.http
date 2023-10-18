@@ -4,7 +4,10 @@ GET http://example.com
 GET http://example.com
 ###
 GET http://example.com/api/
-    status
-    /foo
-    bar
+Content-Type: application/json
+Accept: application/json
+
+###
+POST foobar
+lkjsdflksdf
 ###
