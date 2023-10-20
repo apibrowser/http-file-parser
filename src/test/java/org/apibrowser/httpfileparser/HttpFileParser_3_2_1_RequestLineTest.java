@@ -115,7 +115,7 @@ public class HttpFileParser_3_2_1_RequestLineTest {
         );
 
         HttpFileParser.AbsolutePathContext absolutePath = parsed.absoluteForm().hierPart().absolutePath();
-        Assertions.assertEquals("/api/status/foobar", absolutePath.getText());
+        Assertions.assertEquals("/api/status/foobar", absolutePath.getText().replaceAll("[\n\t ]", ""));
     }
 
     /**
@@ -164,7 +164,7 @@ public class HttpFileParser_3_2_1_RequestLineTest {
         );
 
         HttpFileParser.QueryContext query = parsed.absoluteForm().query();
-        Assertions.assertEquals("myQuery=foo&yourQuery=bar", query.getText());
+        Assertions.assertEquals("myQuery=foo&yourQuery=bar", query.getText().replaceAll("[\n\t ]", ""));
     }
 
     /**
@@ -212,7 +212,8 @@ public class HttpFileParser_3_2_1_RequestLineTest {
         );
 
         HttpFileParser.UriFragmentContext uriFragment = parsed.absoluteForm().uriFragment();
-        Assertions.assertEquals("theFragment&theFragment#theFragment's-on-fire", uriFragment.getText());
+        Assertions.assertEquals("theFragment&theFragment#theFragment's-on-fire",
+                uriFragment.getText().replaceAll("[\n\t ]", ""));
     }
 
     /**

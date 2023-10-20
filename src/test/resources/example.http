@@ -8,6 +8,10 @@ Content-Type: application/json
 Accept: application/json
 
 ###
-POST foobar
-lkjsdflksdf
+POST http://example.com
+
+abc
+< content.json
+def
+
 ###

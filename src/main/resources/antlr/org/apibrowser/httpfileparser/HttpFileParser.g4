@@ -10,9 +10,7 @@ options {
     tokenVocab=HttpFileLexer;
 }
 
-
-//requiredWhiteSpace: WhiteSpace+; // Diff to Spec: Parser rule instead of token
-//newLineWithIndent: NewLine requiredWhiteSpace; // Diff to Spec: Parser rule instead of token
+newLineWithIndent: NewLine WhiteSpaces; // Diff to Spec: Parser rule instead of token
 
 //
 // Part 3.1 Requests file
@@ -109,7 +107,7 @@ ipv4OrRegName: ~(NewLine | Slash | Colon | QuestionMark | Hash | WhiteSpaces)+;
 // -> 3.2.1.3. Resource path
 
 absolutePath: Slash | (pathSeparator segment)+;
-pathSeparator: Slash | NewLineWithIndent;
+pathSeparator: Slash | newLineWithIndent;
 segment: InputCharacter* ;
 
 //
@@ -117,12 +115,12 @@ segment: InputCharacter* ;
 
 //Spec: "qery: (any input-character except ‘#’)* [new-line-with-indent query]"
 // note: input-character excludes NewLine
-query: ~(Hash | NewLine)* (NewLineWithIndent query)?;
+query: ~(Hash | NewLine)* (newLineWithIndent query)?;
 
 //Spec: "fragment: (any input-character except ‘?’)* [new-line-with-indent fragment]"
 // Diff to Spec: cannot name the rule "fragment" since this is a reserved word in ANTLR4
 // note: input-character excludes NewLIne
-uriFragment: ~(QuestionMark | NewLine)* (NewLineWithIndent uriFragment)?;
+uriFragment: ~(QuestionMark | NewLine)* (newLineWithIndent uriFragment)?;
 
 //
 // 3.2.2 Headers
@@ -143,6 +141,22 @@ fieldName: ~(Colon | NewLine)+; //(any input-character except ‘:’)+ - note: 
 //fieldValue: ~(NewLine)* NewLine (NewLineWithIndent fieldValue)?; -> nope
 fieldValue: ~(NewLine)*;
 
-messageBody: Mock; // TODO
+//
+// 3.2.3. Message body
+//
+
+messageBody: messages | multipartFormData;
+
+messages: messageLine (NewLine messageLine)*; // spec says ? instead of * but this seems a bug
+
+messageLine:
+    // (any input-character except ‘< ’, ’<> ’ and ‘###’) line-tail:
+    ( ~(NewLine | LowerThan | ResponseReferenceTag | RequestSeparatorTag) ~(NewLine)*)
+     | inputFileRef;
+
+inputFileRef: LowerThan WhiteSpaces filePath;
+filePath: ~(NewLine)*;
+multipartFormData: Mock;
+
 responseHandler: Mock; // TODO
 responseRef: Mock; // TODO
