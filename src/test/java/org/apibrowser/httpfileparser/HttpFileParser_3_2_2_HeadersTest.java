@@ -10,14 +10,38 @@ public class HttpFileParser_3_2_2_HeadersTest {
     public void requestWithHeaders() {
         HttpFileParser.RequestContext parsed = ParserTestUtil.test(
                 "GET http://example.com/api/get?id=15\n" +
-                "From: user@example.com\n" +
+                "Content-Type: application/json  \n" +
+                "From: user@example.com\t\n" +
                 "\n",
                 HttpFileParser::request
         );
 
-        Assertions.assertEquals("From: user@example.com\n", parsed.headers().getText());
+        Assertions.assertEquals("Content-Type: application/json  \nFrom: user@example.com\t\n", parsed.headers().getText());
     }
 
-    // TODO add more tests
+    @Test
+    public void headers() {
+        HttpFileParser.HeadersContext parsed = ParserTestUtil.test(
+                "Content-Type: application/json\n" +
+                "From: user@example.com  \n" +
+                "Accept: application/json\t\n" +
+                "",
+                HttpFileParser::headers
+        );
+
+        Assertions.assertEquals(3, parsed.headerField().size());
+    }
+
+    @Test
+    public void headerField() {
+        HttpFileParser.HeaderFieldContext parsed = ParserTestUtil.test(
+                "Content-Type: application/json\n" +
+                "",
+                HttpFileParser::headerField
+        );
+
+        Assertions.assertEquals("Content-Type", parsed.fieldName().getText());
+        Assertions.assertEquals("application/json", parsed.fieldValue().getText());
+    }
 
 }
