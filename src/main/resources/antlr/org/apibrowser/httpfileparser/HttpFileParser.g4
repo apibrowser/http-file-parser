@@ -109,7 +109,7 @@ ipv4OrRegName: ~(NewLine | Slash | Colon | QuestionMark | Hash | WhiteSpaces)+;
 
 absolutePath: Slash | (pathSeparator segment)+;
 pathSeparator: Slash | newLineWithIndent;
-segment: ~(NewLine)* ;
+segment: InputCharacter*;
 
 //
 // -> 3.2.1.4. Query and Fragment
