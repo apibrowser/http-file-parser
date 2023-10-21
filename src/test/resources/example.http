@@ -9,7 +9,7 @@ Accept: application/json
 
 ###
 POST http://example.com
-
+Content-Type: multipart/form-data
 abc
 < content.json
 def

@@ -40,6 +40,7 @@ bodyAndOrResponseHandlers: // "at least one" of the sequence: messageBody respon
     | responseHandler responseRef?
     | responseRef
     ;
+
 // original spec:
 //request:
 //    requestLine NewLine
@@ -108,7 +109,7 @@ ipv4OrRegName: ~(NewLine | Slash | Colon | QuestionMark | Hash | WhiteSpaces)+;
 
 absolutePath: Slash | (pathSeparator segment)+;
 pathSeparator: Slash | newLineWithIndent;
-segment: InputCharacter* ;
+segment: ~(NewLine)* ;
 
 //
 // -> 3.2.1.4. Query and Fragment
@@ -145,7 +146,7 @@ fieldValue: ~(NewLine)*;
 // 3.2.3. Message body
 //
 
-messageBody: messages | multipartFormData;
+messageBody: messages; // | multipartFormData; -> decided to skipt, see 3.2.3.1. Multipart-form-data
 
 messages: messageLine (NewLine messageLine)*; // spec says ? instead of * but this seems a bug
 
@@ -156,7 +157,35 @@ messageLine:
 
 inputFileRef: LowerThan WhiteSpaces filePath;
 filePath: ~(NewLine)*;
-multipartFormData: Mock;
+
+
+//
+// -> 3.2.3.1. Multipart-form-data
+//
+// spec yields wrong results it seems, additionally used: https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
+//
+// not sure if multipart should be parsed specifically anyway - could also be interpreted as normal message.
+// Self Descriptive Messages / Content Negotiation defines a way to nest arbitrary other formats inside the message
+// body, creating "Layers" of languages. Parsing message contents depending on media-type is thus the job of the next
+// higher layer. We are also not parsing json or xml in here - why should multipart/form-data get special treatment?
 
 responseHandler: Mock; // TODO
 responseRef: Mock; // TODO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
