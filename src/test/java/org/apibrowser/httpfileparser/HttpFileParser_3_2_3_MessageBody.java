@@ -4,6 +4,8 @@ import org.apibrowser.httpfileparser.testutil.ParserTestUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 public class HttpFileParser_3_2_3_MessageBody {
 
     @Test
@@ -42,6 +44,25 @@ public class HttpFileParser_3_2_3_MessageBody {
     }
 
     @Test
+    public void messageBodyWithEmptyLines() {
+        HttpFileParser.MessageBodyContext parsed = ParserTestUtil.test(
+                "POST http://example.com\n" +
+                "\n" +
+                "a\n" +
+                "b\n" +
+                "c\n" +
+                "\n" + // empty
+                "\n" + // empty
+                "d\n" +
+                "e\n" +
+                "f\n",
+                HttpFileParser::messageBody
+        );
+
+        Assertions.assertTrue(parsed.messages().getText().contains("f"));
+    }
+
+    @Test
     public void messageBodyWithInputFileRef() {
         HttpFileParser.MessageBodyContext parsed = ParserTestUtil.test(
                 "< content.json" +
@@ -65,6 +86,35 @@ public class HttpFileParser_3_2_3_MessageBody {
         Assertions.assertEquals("hell, oh", parsed.messages().messageLine(0).getText().trim());
         Assertions.assertEquals("content.json", parsed.messages().messageLine(1).inputFileRef().filePath().getText());
         Assertions.assertEquals("world", parsed.messages().messageLine(2).getText().trim());
+    }
+
+    /**
+     * The special treatment of Multipart-FormData as in the official spec was skipped, but
+     * we must assert that this Content-Type is still parsed as regular message body.
+     */
+    @Test
+    public void messageBodyIncludesMultipartFormData() {
+        HttpFileParser.RequestContext parsed = ParserTestUtil.test(
+                "POST http://example.com/api/upload\n" +
+                "Content-Type: multipart/form-data; boundary=abcd\n" +
+                "\n" +
+                "--abcd\n" + // message line 0
+                "Content-Disposition: form-data; name=\"text\"\n" + // message line 1
+                "\n" +
+                "Text\n" + // message line 2
+                "--abcd\n" + // message line 3
+                "Content-Disposition: form-data; name=\"file_to_send\"; filename=\"input.txt\"\n" + // message line 4
+                "\n" +
+                "< ./input.txt\n" + // message line 5
+                "--abcd--\n", // message line 6
+                HttpFileParser::request
+        );
+
+        List<HttpFileParser.MessageLineContext> bodyLines =
+                parsed.bodyAndOrResponseHandlers().messageBody().messages().messageLine();
+        Assertions.assertEquals("--abcd", bodyLines.get(0).getText());
+        Assertions.assertEquals("--abcd--", bodyLines.get(bodyLines.size() - 1).getText());
+        Assertions.assertEquals("< ./input.txt", bodyLines.get(5).getText());
     }
 
 }

@@ -148,7 +148,8 @@ fieldValue: ~(NewLine)*;
 
 messageBody: messages; // | multipartFormData; -> decided to skipt, see 3.2.3.1. Multipart-form-data
 
-messages: messageLine (NewLine messageLine)*; // spec says ? instead of * but this seems a bug
+// messages & message lines: original spec would not allow empty lines => adapted rules:
+messages: (messageLine? NewLine)+;
 
 messageLine:
     // (any input-character except ‘< ’, ’<> ’ and ‘###’) line-tail:
