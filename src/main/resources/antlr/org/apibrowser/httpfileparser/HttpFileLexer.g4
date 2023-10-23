@@ -46,6 +46,9 @@ BracketRight: ']';
 LowerThan: '<';
 GreaterThan: '>';
 ResponseReferenceTag: '<>' | '<>' WhiteSpace+;
+ResponseHandlerTag: '>' WhiteSpace+;
+ResponseHandlerScriptStart: '{%';
+ResponseHandlerScriptEnd: '%}';
 
 InputCharacter: ~[\r\n\u2028\u2029];
 

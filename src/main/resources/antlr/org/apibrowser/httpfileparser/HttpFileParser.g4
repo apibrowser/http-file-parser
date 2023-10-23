@@ -153,7 +153,8 @@ messages: (messageLine? NewLine)+;
 
 messageLine:
     // (any input-character except ‘< ’, ’<> ’ and ‘###’) line-tail:
-    ( ~(NewLine | LowerThan | ResponseReferenceTag | RequestSeparatorTag) ~(NewLine)*)
+    // Also we must exclude ResponseHandlerTag ('> ') at the start of a line to prevent it from being parsed as message
+    ( ~(NewLine | LowerThan | ResponseHandlerTag | ResponseReferenceTag | RequestSeparatorTag) ~(NewLine)*)
      | inputFileRef;
 
 inputFileRef: LowerThan WhiteSpaces filePath;
@@ -170,7 +171,19 @@ filePath: ~(NewLine)*;
 // body, creating "Layers" of languages. Parsing message contents depending on media-type is thus the job of the next
 // higher layer. We are also not parsing json or xml in here - why should multipart/form-data get special treatment?
 
-responseHandler: Mock; // TODO
+//
+// 3.2.4. Response handler
+//
+
+responseHandler:
+ ResponseHandlerTag ResponseHandlerScriptStart handlerScript  ResponseHandlerScriptEnd
+ | ResponseHandlerTag filePath
+ ;
+
+// handlerScript is mentioned but not defined in spec, but described as:
+// "An in-place script can’t contain ‘%}’ or request separator (‘###’)."
+handlerScript: ~(RequestSeparator | ResponseHandlerScriptEnd)*;
+
 responseRef: Mock; // TODO
 
 
