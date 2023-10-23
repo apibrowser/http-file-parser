@@ -23,9 +23,15 @@ newLineWithIndent: NewLine WhiteSpaces; // Diff to Spec: Parser rule instead of 
 // So, we add the "request" before that:
 // "requestsFile: request requestWithSeparator*"
 // But now, Leading and Trailing Separator Lines are not allowed. So add (request-separator)* on both sides:
-requestsFile: (RequestSeparator | NewLine)* request requestWithSeparator* (RequestSeparator | NewLine)*;
+requestsFile: fileHeader? request requestWithSeparator* fileFooter?;
 
-requestWithSeparator: (RequestSeparator)+ request;
+fileHeader: commentBlock;
+fileFooter: commentBlock;
+commentBlock: (requestSeparator | commentLine | NewLine)+;
+
+requestWithSeparator: requestSeparator commentBlock? request;
+
+requestSeparator: RequestSeparator;
 
 //
 // 3.2 Request
@@ -203,7 +209,7 @@ responseRef: ResponseReferenceTag WhiteSpaces filePath;
 // state thanks to the "almost all characters are always allowed everywhere" kind of format,
 // so the env-variable parsing and replacement is left for the next higher "layer".
 
-
+commentLine: Hash InputCharacter* NewLine;
 
 
 

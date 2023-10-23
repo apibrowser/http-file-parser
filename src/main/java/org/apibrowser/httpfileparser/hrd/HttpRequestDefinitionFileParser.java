@@ -1,6 +1,5 @@
 package org.apibrowser.httpfileparser.hrd;
 
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apibrowser.httpfileparser.HttpFileParser;
 import org.apibrowser.httpfileparser.HttpFileParserFactory;
 import org.apibrowser.httpfileparser.hrd.model.HttpRequestDefinition;
@@ -8,7 +7,6 @@ import org.apibrowser.httpfileparser.hrd.model.HttpRequestDefinitionCollection;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 /**
  * Facade around the "raw" HttpFileParser to provide a more convenient API and an easier to use
@@ -41,19 +39,33 @@ public class HttpRequestDefinitionFileParser {
         }
 
         // Map First request:
+        HttpFileParser.FileHeaderContext fileHeader = raw.fileHeader();
+        HttpFileParser.CommentBlockContext commentBlock = fileHeader != null ? fileHeader.commentBlock() : null;
+
         result.add(toHrd(
-            raw.RequestSeparator(), // might be empty
-            raw.request() // not empty
+                commentBlock != null && commentBlock.requestSeparator().size() > 0
+                        ? commentBlock.requestSeparator(0)
+                        : null,
+                commentBlock, // might be empty
+                raw.request() // guaranteed not empty
         ));
 
-        for (HttpFileParser.RequestWithSeparatorContext request : raw.requestWithSeparator()) {
-            result.add(toHrd(request.RequestSeparator(), request.request()));
+        for (HttpFileParser.RequestWithSeparatorContext requestWithSep : raw.requestWithSeparator()) {
+            result.add(toHrd(
+                    requestWithSep.requestSeparator(), requestWithSep.commentBlock(), requestWithSep.request()
+            ));
         }
 
         return result;
     }
 
-    private HttpRequestDefinition toHrd(List<TerminalNode> requestSeparator, HttpFileParser.RequestContext request) {
+    /**
+     * @param requestSeparatorContext
+     * @param commentBlock            might be null
+     */
+    private HttpRequestDefinition toHrd(HttpFileParser.RequestSeparatorContext requestSeparatorContext,
+                                        HttpFileParser.CommentBlockContext commentBlock,
+                                        HttpFileParser.RequestContext request) {
         return new HttpRequestDefinition(); // TODO
     }
 }

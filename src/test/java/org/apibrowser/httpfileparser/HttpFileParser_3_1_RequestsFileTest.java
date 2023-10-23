@@ -18,7 +18,7 @@ public class HttpFileParser_3_1_RequestsFileTest {
                 HttpFileParser::requestWithSeparator
         );
 
-        Assertions.assertNotNull(parsed.RequestSeparator(0));
+        Assertions.assertNotNull(parsed.requestSeparator().RequestSeparator());
         Assertions.assertNotNull(parsed.request());
     }
 
@@ -30,7 +30,7 @@ public class HttpFileParser_3_1_RequestsFileTest {
                 HttpFileParser::requestWithSeparator
         );
 
-        Assertions.assertNotNull(parsed.RequestSeparator(0));
+        Assertions.assertNotNull(parsed.requestSeparator().RequestSeparator());
         Assertions.assertNotNull(parsed.request());
     }
 
@@ -44,7 +44,8 @@ public class HttpFileParser_3_1_RequestsFileTest {
                 HttpFileParser::requestWithSeparator
         );
 
-        Assertions.assertEquals(3, parsed.RequestSeparator().size()); // 3 Separator Lines (starting with "###")
+        Assertions.assertNotNull(parsed.requestSeparator().RequestSeparator()); // first Separator Line  (starting with "###")
+        Assertions.assertEquals(2, parsed.commentBlock().requestSeparator().size()); // 2 Separator Lines below
         Assertions.assertNotNull(parsed.request());
     }
 
@@ -82,7 +83,7 @@ public class HttpFileParser_3_1_RequestsFileTest {
         );
 
         Assertions.assertNotNull(parsed.request());
-        Assertions.assertEquals(3, parsed.RequestSeparator().size());
+        Assertions.assertEquals(3, parsed.fileFooter().commentBlock().requestSeparator().size());
     }
 
     @Test

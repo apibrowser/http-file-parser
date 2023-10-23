@@ -1,5 +1,6 @@
 package org.apibrowser.httpfileparser.hrd;
 
+import org.apibrowser.httpfileparser.hrd.model.HttpMethod;
 import org.apibrowser.httpfileparser.hrd.model.HttpRequestDefinitionCollection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
