@@ -190,6 +190,15 @@ handlerScript: ~(RequestSeparator | ResponseHandlerScriptEnd)*;
 responseRef: ResponseReferenceTag WhiteSpaces filePath;
 
 
+//
+// 3.2.6. Environment variables
+//
+// Note: this rule is defined by the spec, but never used:
+//      env-variable: ‘{{’ optional-whitespace identifier optional-whitespace ‘}}’
+//
+// It looks difficult to incorporate this into the parsing rules directly, which are hard enough in their current
+// state thanks to the "almost all characters are always allowed everywhere" kind of format,
+// so the env-variable parsing and replacement is left for the next higher "layer".
 
 
 
