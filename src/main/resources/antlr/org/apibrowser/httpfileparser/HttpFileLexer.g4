@@ -6,6 +6,8 @@
 //
 lexer grammar HttpFileLexer;
 
+// TODO: add line comments like "// this will be ignored!" - probably to lexer with -> channel(HIDDEN)?
+
 RequestSeparatorTag: '###'; // diff to spec: inlined "line-tail" token
 RequestSeparator: RequestSeparatorTag (InputCharacter)* NewLine; // diff to spec: inlined "line-tail" token
 //LineTail: (InputCharacter)* NewLine; This is way too greedy to put it in a lexer

@@ -1,0 +1,10 @@
+GET http://example.com
+
+###
+PUT http://example.com
+
+###
+POST http://example.com
+
+###
+DELETE http://example.com
