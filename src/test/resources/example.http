@@ -6,7 +6,6 @@ GET http://example.com
 GET http://example.com/api/
 Content-Type: application/json
 Accept: application/json
-
 ###
 POST http://example.com
 

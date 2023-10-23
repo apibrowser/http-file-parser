@@ -150,13 +150,15 @@ fieldValue: ~(NewLine)*;
 messageBody: messages; // | multipartFormData; -> decided to skipt, see 3.2.3.1. Multipart-form-data
 
 // messages & message lines: original spec would not allow empty lines => adapted rules:
-messages: (messageLine? NewLine)+;
+messages: messageLine+;
 
 messageLine:
     // (any input-character except ‘< ’, ’<> ’ and ‘###’) line-tail:
     // Also we must exclude ResponseHandlerTag ('> ') at the start of a line to prevent it from being parsed as message
-    ( ~(NewLine | LowerThan | ResponseHandlerTag | ResponseReferenceTag | RequestSeparatorTag | RequestSeparator) ~(NewLine)*)
-     | inputFileRef;
+    ( ~(NewLine | LowerThan | ResponseHandlerTag | ResponseReferenceTag | RequestSeparatorTag | RequestSeparator) ~(NewLine)* NewLine)
+     | inputFileRef NewLine
+     | NewLine // Allow empty lines
+;
 
 inputFileRef: LowerThan WhiteSpaces filePath;
 filePath: ~(NewLine)*;

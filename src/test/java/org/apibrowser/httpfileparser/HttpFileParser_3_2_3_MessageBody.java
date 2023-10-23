@@ -32,15 +32,15 @@ public class HttpFileParser_3_2_3_MessageBody {
     @Test
     public void messageBody() {
         HttpFileParser.MessageBodyContext parsed = ParserTestUtil.test(
-                "{ \n" + // 1
-                "   \"key\": \"value\", \n" + //2
-                "}\n" + // 3
-                "\n",
+                "{ \n" + // 0
+                "   \"key\": \"value\", \n" + // 1
+                "}\n" + // 2
+                "",
                 HttpFileParser::messageBody
         );
 
         Assertions.assertEquals(3, parsed.messages().messageLine().size());
-        Assertions.assertEquals("}", parsed.messages().messageLine(2).getText());
+        Assertions.assertEquals("}", parsed.messages().messageLine(2).getText().trim());
     }
 
     @Test
@@ -100,21 +100,21 @@ public class HttpFileParser_3_2_3_MessageBody {
                 "\n" +
                 "--abcd\n" + // message line 0
                 "Content-Disposition: form-data; name=\"text\"\n" + // message line 1
-                "\n" +
-                "Text\n" + // message line 2
-                "--abcd\n" + // message line 3
-                "Content-Disposition: form-data; name=\"file_to_send\"; filename=\"input.txt\"\n" + // message line 4
-                "\n" +
-                "< ./input.txt\n" + // message line 5
-                "--abcd--\n", // message line 6
+                "\n" + // message line 2
+                "Text\n" + // message line 3
+                "--abcd\n" + // message line 4
+                "Content-Disposition: form-data; name=\"file_to_send\"; filename=\"input.txt\"\n" + // message line 5
+                "\n" + // message line 6
+                "< ./input.txt\n" + // message line 7
+                "--abcd--\n", // message line 8
                 HttpFileParser::request
         );
 
         List<HttpFileParser.MessageLineContext> bodyLines =
                 parsed.bodyAndOrResponseHandlers().messageBody().messages().messageLine();
-        Assertions.assertEquals("--abcd", bodyLines.get(0).getText());
-        Assertions.assertEquals("--abcd--", bodyLines.get(bodyLines.size() - 1).getText());
-        Assertions.assertEquals("< ./input.txt", bodyLines.get(5).getText());
+        Assertions.assertEquals("--abcd", bodyLines.get(0).getText().trim());
+        Assertions.assertEquals("--abcd--", bodyLines.get(bodyLines.size() - 1).getText().trim());
+        Assertions.assertEquals("< ./input.txt", bodyLines.get(bodyLines.size() - 2).getText().trim());
     }
 
 }
