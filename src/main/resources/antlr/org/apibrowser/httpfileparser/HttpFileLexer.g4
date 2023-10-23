@@ -45,7 +45,7 @@ BracketLeft: '[';
 BracketRight: ']';
 LowerThan: '<';
 GreaterThan: '>';
-ResponseReferenceTag: '<>' | '<>' WhiteSpace+;
+ResponseReferenceTag: '<>';
 ResponseHandlerTag: '>' WhiteSpace+;
 ResponseHandlerScriptStart: '{%';
 ResponseHandlerScriptEnd: '%}';

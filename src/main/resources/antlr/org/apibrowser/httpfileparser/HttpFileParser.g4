@@ -184,9 +184,10 @@ responseHandler:
 // "An in-place script can’t contain ‘%}’ or request separator (‘###’)."
 handlerScript: ~(RequestSeparator | ResponseHandlerScriptEnd)*;
 
-responseRef: Mock; // TODO
-
-
+//
+// 3.2.5. Response reference
+//
+responseRef: ResponseReferenceTag WhiteSpaces filePath;
 
 
 
