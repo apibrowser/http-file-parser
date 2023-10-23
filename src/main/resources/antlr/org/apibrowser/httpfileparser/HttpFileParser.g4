@@ -33,7 +33,8 @@ requestWithSeparator: (RequestSeparator)+ request;
 request:
     requestLine NewLine
     headers?
-    (NewLine bodyAndOrResponseHandlers)?;
+    (NewLine bodyAndOrResponseHandlers)?
+    NewLine*;
 
 bodyAndOrResponseHandlers: // "at least one" of the sequence: messageBody responseHandler responseRef
     messageBody responseHandler? responseRef?
@@ -154,7 +155,7 @@ messages: (messageLine? NewLine)+;
 messageLine:
     // (any input-character except ‘< ’, ’<> ’ and ‘###’) line-tail:
     // Also we must exclude ResponseHandlerTag ('> ') at the start of a line to prevent it from being parsed as message
-    ( ~(NewLine | LowerThan | ResponseHandlerTag | ResponseReferenceTag | RequestSeparatorTag) ~(NewLine)*)
+    ( ~(NewLine | LowerThan | ResponseHandlerTag | ResponseReferenceTag | RequestSeparatorTag | RequestSeparator) ~(NewLine)*)
      | inputFileRef;
 
 inputFileRef: LowerThan WhiteSpaces filePath;
@@ -182,7 +183,7 @@ responseHandler:
 
 // handlerScript is mentioned but not defined in spec, but described as:
 // "An in-place script can’t contain ‘%}’ or request separator (‘###’)."
-handlerScript: ~(RequestSeparator | ResponseHandlerScriptEnd)*;
+handlerScript: ~(RequestSeparatorTag | RequestSeparator | ResponseHandlerScriptEnd)*;
 
 //
 // 3.2.5. Response reference

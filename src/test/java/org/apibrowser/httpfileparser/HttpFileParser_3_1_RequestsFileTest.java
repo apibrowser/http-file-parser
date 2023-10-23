@@ -85,4 +85,22 @@ public class HttpFileParser_3_1_RequestsFileTest {
         Assertions.assertEquals(3, parsed.RequestSeparator().size());
     }
 
+    @Test
+    public void requestFileWithMultipleRequests() {
+        HttpFileParser.RequestsFileContext parsed = ParserTestUtil.test(
+                "GET http://example.com\n" +
+                "\n" +
+                "###\n" +
+                "PUT http://example.com\n" +
+                "\n" +
+                "###\n" +
+                "POST http://example.com\n\n" +
+                "###\n" +
+                "",
+                HttpFileParser::requestsFile
+        );
+
+        Assertions.assertNotNull(parsed.request());
+        Assertions.assertEquals(2, parsed.requestWithSeparator().size());
+    }
 }
